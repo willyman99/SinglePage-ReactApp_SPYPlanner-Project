@@ -34,15 +34,6 @@ const userSchema = new Schema({
         ref: 'PlanBlock'
     }],
     //-----
-
-    //Director Exclusive Attributes
-    missions: [{
-        mission: {
-            type: Schema.Types.ObjectId,
-            ref: 'Mission'
-        }
-    }],
-    //-----
     
     //Agent exclusive attributes
     assignedMission: {
@@ -50,7 +41,10 @@ const userSchema = new Schema({
             ref: 'Mission'
     },
 
-    medals: Number
+    medals: {
+        type: Number,
+        default: 0
+    }
     //-----
 
 }, {

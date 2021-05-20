@@ -6,7 +6,7 @@ const planBlockSchema = new Schema({
 
     title: {
         type: String,
-        required: [true, 'Description is mandatory.']
+        required: [true, 'Title is mandatory.']
     },
 
     description: String,
@@ -16,12 +16,12 @@ const planBlockSchema = new Schema({
         ref: 'User'
     }],
 
-    location: {
-        latitude: String,
-        longitude: String,
-        placeName: String
-        //Revisar google maps api
-    },
+    // location: {
+    //     latitude: String,
+    //     longitude: String,
+    //     placeName: String
+    //     //Revisar google maps api
+    // },
 
     //date: ??
 

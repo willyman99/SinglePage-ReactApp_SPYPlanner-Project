@@ -1,28 +1,31 @@
 const express = require('express')
 const router = express.Router()
 
-const User = require('./../models/user.model')
-const PlanBlock = require('./../models/planBlock.model')
+const User = require('../models/user.model')
+const PlanBlock = require('../models/planBlock.model')
+
 
 //Create Plan Block
 router.post('/addBlock', (req, res) => {
 
-    const planBlock = req.body
+    const { title, description, participants } = req.body
+    const promisesArray = []
 
     PlanBlock
-        .create(planBlock)
-        .then(response => User.findByIdAndUpdate(req.session.currentUser._id, { $push: { plans: response.id } }))
-        .then(response => res.json(response))
+        .create({ title, description, participants })
+        .then(response => {
+
+            response.participants.forEach(elm => {
+                promisesArray.push(User.findByIdAndUpdate(elm, { $push: { plans: response.id } }))
+            })
+
+            Promise
+                .all(promisesArray)
+                .then(() => res.json(response))
+                .catch(err => res.status(500).json({ code: 500, message: "Error saving PlanBlocks in User's plans", err }))
+                
+        })
         .catch(err => res.status(500).json({ code: 500, message: 'Error saving PlanBlock', err }))
-})
-
-
-//Read one Plan Block
-router.get('/:planBlockId', (req, res) => {
-    PlanBlock
-        .findById(req.params.planBlockId)
-        .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching PlanBlock', err }))
 })
 
 //Read all of current user's Plan Blocks
@@ -30,25 +33,56 @@ router.get('/', (req, res) => {
     User
         .findById(req.session.currentUser._id)
         .select('plans')
-        .populate('plans')
+        .populate([{
+            path: 'plans',
+            model: 'PlanBlock',
+            populate: {
+                path: 'participants',
+                model: 'User',
+                select: 'id username name'
+            }
+        }])
         .then(response => res.json(response))
         .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user plans', err }))
 })
 
 
-//Update Plan Block
-router.put('/:planBlockId/edit', (req, res) => {
+//Read one Plan Block
+router.get('/:planBlockId', (req, res) => {
+
+    const {planBlockId} = req.params
+
     PlanBlock
-        .findByIdAndUpdate(req.params.planBlockId, req.body)
+        .findById(planBlockId)
+        .populate('participants', {id: 1, username: 1, name: 1})
+        .then(response => res.json(response))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching PlanBlock', err }))
+})
+
+
+//Update Plan Block
+router.put('/:planBlockId', (req, res) => {
+
+    const {planBlockId} = req.params
+    const { title, description, participants } = req.body
+
+    PlanBlock
+        .findByIdAndUpdate(planBlockId, { title, description, participants }, {new: true})
         .then(response => res.json(response))
         .catch(err => res.status(500).json({ code: 500, message: 'Error editing PlanBlock', err }))
 })
 
 
 //Delete Plan Block
-router.put('/:planBlockId/delete', (req, res) => {
+router.delete('/:planBlockId', (req, res) => {
+
+    const {planBlockId} = req.params
+
     PlanBlock
-        .findByIdAndDelete(req.params.planBlockId, req.body)
-        .then(() => res.json({ mesage: 'Plan Block deleted successfully' }))
+        .findByIdAndDelete(planBlockId)
+        .then(() => res.json({ mesage: 'PlanBlock deleted successfully' }))
         .catch(err => res.status(500).json({ code: 500, message: 'Error deleting PlanBlock', err }))
 })
+
+
+module.exports = router
