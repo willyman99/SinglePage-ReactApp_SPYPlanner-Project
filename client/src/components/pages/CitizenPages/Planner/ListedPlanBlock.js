@@ -1,10 +1,24 @@
 import './Planner.css'
+import { Card, Col, Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
-const ListedPlanBlock = () => {
+
+const ListedPlanBlock = ({ description, title, participants, reload, _id }) => {
+
     return (
-        <div>
-            <h4>PlanBlock</h4>
-        </div>
+        <Col md={3}>
+            <Card className="planBlock-card">
+                <Card.Body>
+                    <Card.Header>DATE</Card.Header>
+                    <Card.Title>{title}</Card.Title>
+                    <Card.Text>{description}</Card.Text>
+                    <Button variant="dark">
+                        <Link to={`/planner/${_id}`} className="nav-link">MORE INFO</Link>
+                    </Button>
+                    <Card.Footer>TIMESLOT</Card.Footer>
+                </Card.Body>
+            </Card>
+        </Col>
     )
 }
 

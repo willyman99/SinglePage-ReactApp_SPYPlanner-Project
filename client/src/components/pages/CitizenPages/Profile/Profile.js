@@ -4,6 +4,7 @@ import { Container, Row, Col, Button, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import UserService from './../../../../service/user.service'
+import AuthService from './../../../../service/auth.service'
 
 class Profile extends Component {
 
@@ -14,7 +15,9 @@ class Profile extends Component {
             editName: false
         }
         this.userService = new UserService()
+        this.authService = new AuthService()
     }
+
 
     nameElementToggle() {
         this.setState({ editName: !this.state.editName, name: this.props.loggedUser.name })
@@ -46,7 +49,7 @@ class Profile extends Component {
 
     render() {
 
-        const {loggedUser, logout } = this.props
+        const { loggedUser, logout } = this.props
 
         return (
             <Container>
@@ -89,7 +92,6 @@ class Profile extends Component {
                     <Col md={6}>
                         <img src="../../../../../public/img/citizen/profPic-default.jpg" alt={loggedUser.username}></img>
                         <Button variant="dark">Change Profile Picture</Button>
-
                     </Col>
                 </Row>
                 <Button variant="dark" onClick={() => logout()}>
@@ -101,6 +103,3 @@ class Profile extends Component {
 }
 
 export default Profile
-
-
-// = ({ loggedUser, logout }) =>

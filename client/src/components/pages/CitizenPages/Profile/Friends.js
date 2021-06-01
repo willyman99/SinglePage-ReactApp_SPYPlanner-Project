@@ -15,7 +15,7 @@ class Friends extends Component {
         this.state = {
             friends: undefined,
             allUsers: undefined,
-            searchValue: ''
+            searchValue: undefined
         }
         this.userService = new UserService()
     }
@@ -54,6 +54,7 @@ class Friends extends Component {
 
 
     searchFor(value) {
+        if(value === '') { value = undefined }
         this.setState({ searchValue: value })
     }
 
@@ -68,7 +69,7 @@ class Friends extends Component {
 
             <Container>
                 <Row>
-                    <Col md={6}>
+                    <Col md={7}>
                         <h2>Your Friends:</h2>
                         <hr/>
                         {
@@ -76,23 +77,20 @@ class Friends extends Component {
                                 <h1>LOADING FRIENDS</h1>
                             :
                                 <>
-                                    {
-                                        friends.map(elm =>
-                                            <FriendCard
-                                                key={elm._id}
-                                                {...elm} loggedUser={this.props.loggedUser}
-                                                handleAlert={this.props.handleAlert}
-                                                storeUser={this.props.storeUser}
-                                                reload={() => this.loadCommunity()}
-                                                
-                                            />
-                                        )
-                                    }
+                                {friends.map(elm =>
+                                    <FriendCard
+                                        key={elm._id}
+                                        {...elm} loggedUser={this.props.loggedUser}
+                                        handleAlert={this.props.handleAlert}
+                                        storeUser={this.props.storeUser}
+                                        reload={() => this.loadCommunity()} 
+                                    />
+                                )}
                                 </>
                         }
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={5}>
                         <h2>Community Search:</h2>
                         <hr/>
                         {

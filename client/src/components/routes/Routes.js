@@ -8,6 +8,7 @@ import Profile from '../pages/CitizenPages/Profile/Profile'
 import Friends from '../pages/CitizenPages/Profile/Friends'
     
 import Planner from '../pages/CitizenPages/Planner/Planner'
+import FullPlanBlock from '../pages/CitizenPages/Planner/FullPlanBlock'
 import NewPlanBlockForm from '../pages/CitizenPages/Planner/NewPlanBlockForm'
 
 
@@ -37,7 +38,8 @@ const Routes = ({ storeUser, loggedUser, logout, handleAlert }) => {
             <Route path="/profile/friends" render={props => checkRoles('citizen', 'director') ? <Friends loggedUser={loggedUser} handleAlert={handleAlert} storeUser={storeUser}/> : <Redirect to="/login" />} />
 
             <Route path="/planner" exact render={props => checkRoles('citizen', 'director') ? <Planner loggedUser={loggedUser} /> : <Redirect to="/login" />} />
-            <Route path="/planner/createForm" render={props => checkRoles('citizen', 'director') ? <NewPlanBlockForm loggedUser={loggedUser} /> : <Redirect to="/login" />} />
+            <Route path="/planner/createForm" render={props => checkRoles('citizen', 'director') ? <NewPlanBlockForm loggedUser={loggedUser} {...props} handleAlert={handleAlert} storeUser={storeUser}/> : <Redirect to="/login" />} />
+            <Route path="/planner/:planBlockId" render={props => checkRoles('citizen', 'director') ? <FullPlanBlock loggedUser={loggedUser} {...props} handleAlert={handleAlert} storeUser={storeUser}/> : <Redirect to="/login" />} />
 
             
             <Route path="/directorLandingPage" render={props => checkRoles('director') ? <DirectorLandingPage loggedUser={loggedUser} /> : <Redirect to="/login" />} />

@@ -10,8 +10,6 @@ const MissionPlanBlock = require('./../models/missionPlanBlock.model')
 //Show all users
 router.get('/allUsers', (req, res) => {
 
-    console.log(req.session.currentUser._id)
-
     switch (req.session.currentUser.role) {
 
         case 'citizen':
@@ -27,6 +25,20 @@ router.get('/allUsers', (req, res) => {
             res.json({message: 'Agents are alone.'})
             break
     }
+})
+
+//Get one user's name
+router.get('/user/:userId', (req, res) => {
+
+
+    const { userId } = req.params
+    console.log(userId)
+
+    User
+        .findById(userId)
+        .select('name id')
+        .then(response => res.json(response))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user', err }))
 })
 
 

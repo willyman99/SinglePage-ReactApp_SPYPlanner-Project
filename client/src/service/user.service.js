@@ -12,6 +12,7 @@ class UserService {
 
     profile = () => this.app.get('/profile') //The current user's profile (dependent on role)
     getAllUsers = () => this.app.get('/allusers') //All users except itself (dependent on role)
+    getName = userId => this.app.get(`/user/${userId}`) //Get a signle user's name only
 
     changeName = name => this.app.put('/changename', { name }) //Updated CurrentUser.json (dependent on role)
     

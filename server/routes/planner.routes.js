@@ -76,12 +76,24 @@ router.put('/:planBlockId', (req, res) => {
 //Delete Plan Block
 router.delete('/:planBlockId', (req, res) => {
 
-    const {planBlockId} = req.params
+    const { planBlockId } = req.params
+    const promisesArray = []
 
     PlanBlock
-        .findByIdAndDelete(planBlockId)
-        .then(() => res.json({ mesage: 'PlanBlock deleted successfully' }))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting PlanBlock', err }))
+        .findById(planBlockId)
+        .then(response => {
+            response.participants.forEach(elm => {
+                promisesArray.push(User.findByIdAndUpdate(elm, { $pull: { plans: planBlockId } }))
+            })
+
+            Promise
+                .all(promisesArray)
+                .then(() => PlanBlock.findByIdAndDelete(planBlockId))
+                .then(() => res.json({ mesage: 'PlanBlock deleted successfully.' }))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error deleting PlanBlock', err }))
+                
+        })
+        .catch(err => res.status(500).json({ code: 500, message: 'Error finding PlanBlock', err }))    
 })
 
 
