@@ -18,7 +18,7 @@ class MissionService {
     getAssignedMission = () => this.app.get('/') //AGENTS ONLY: The Current User's (agent) full assigned Mission
 
     addMissionBlock = (title, description, parallelCitizenPlanBlock) => this.app.post('/plan/addBlock', { title, description, parallelCitizenPlanBlock }) //AGENTS ONLY: The created MissionPlanBlock (and saves it in the corresponding mission)
-    getAssignedMissionPlan = () => this.app.get('/plan') //AGENTS & ONLY: All the MissionPlanBlocks from the Current User's assigned Mission
+    getAssignedMissionPlan = () => this.app.get('/plan') //AGENTS ONLY: All the MissionPlanBlocks from the Current User's assigned Mission
     getOneMissionPlanBlock = missionPlanBlockId => this.app.get(`/plan/${missionPlanBlockId}`) //AGENTS & DIRECTOR ONLY: The MissionPlanBlock
     updateOneMissionPlanBlock = (missionPlanBlockId, title, description, parallelCitizenPlanBlock) => this.app.put(`/plan/${missionPlanBlockId}`, {title, description, parallelCitizenPlanBlock}) //AGENTS ONLY: The updated MissionPlanBlock
     deleteOneMissionPlanBlock = missionPlanBlockId => this.app.delete(`/${missionPlanBlockId}`) //AGENTS & DIRECTOR ONLY: msg: 'MissionPlanBlock deleted successfully'

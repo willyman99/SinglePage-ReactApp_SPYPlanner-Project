@@ -1,5 +1,5 @@
 import './Footer.css'
 
-const Footer = () => <footer>POOOOTER</footer>
+const Footer = () => <footer>FOOTER</footer>
 
 export default Footer

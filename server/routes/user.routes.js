@@ -10,21 +10,17 @@ const MissionPlanBlock = require('./../models/missionPlanBlock.model')
 //Show all users
 router.get('/allUsers', (req, res) => {
 
+    console.log(req.session.currentUser._id)
+
     switch (req.session.currentUser.role) {
 
         case 'citizen':
-            User
-            .find({ role: 'citizen' }) //add AND to not show itself
-            .select('id username name')
-            .then(response => res.json(response))
-            .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users', err }))
-            break
-        
         case 'director':
             User
-            .find({ id: {$ne: req.session.currentUser._id}})
-            .then(response => res.json(response))
-            .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users', err }))
+                .find({ $and: [ { role: 'citizen' }, { _id: {$ne: req.session.currentUser._id}} ] })
+                .select('id username name')
+                .then(response => res.json(response))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users', err }))
             break
         
         case 'agent':
@@ -106,18 +102,15 @@ router.put('/addFriend', (req, res) => {
     switch (req.session.currentUser.role) {
 
         case 'citizen':
-            User
-            .findByIdAndUpdate(friendId, { $push: { friends: req.session.currentUser._id } })
-            .then(() => User.findByIdAndUpdate(req.session.currentUser._id, { $push: { friends: friendId } }, { new: true }))
-            .then(response => {
-                req.session.currentUser = response
-                res.json(response)
-            })
-            .catch(err => res.status(500).json({ code: 500, message: 'Error editing users', err }))
-            break
-        
         case 'director':
-            res.json({message: "The director has no friends."})
+            User
+                .findByIdAndUpdate(friendId, { $push: { friends: req.session.currentUser._id } })
+                .then(() => User.findByIdAndUpdate(req.session.currentUser._id, { $push: { friends: friendId } }, { new: true }))
+                .then(response => {
+                    req.session.currentUser = response
+                    res.json(response)
+                })
+                .catch(err => res.status(500).json({ code: 500, message: 'Error editing users', err }))
             break
         
         case 'agent':
@@ -135,6 +128,7 @@ router.put('/removeFriend', (req, res) => {
     switch (req.session.currentUser.role) {
 
         case 'citizen':
+        case 'director':
             User
             .findByIdAndUpdate(friendId, { $pull: { friends: req.session.currentUser._id } })
             .then(() => User.findByIdAndUpdate(req.session.currentUser._id, { $pull: { friends: friendId } }, { new: true }))
@@ -143,10 +137,6 @@ router.put('/removeFriend', (req, res) => {
                 res.json(response)
             })
             .catch(err => res.status(500).json({ code: 500, message: 'Error editing user', err }))
-            break
-        
-        case 'director':
-            res.json({message: "The director has no friends."})
             break
         
         case 'agent':

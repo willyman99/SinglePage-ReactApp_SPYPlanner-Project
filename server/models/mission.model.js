@@ -17,7 +17,6 @@ const missionSchema = new Schema({
     targets: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
-
     }],
 
     objective: {

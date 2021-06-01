@@ -25,7 +25,7 @@ router.post('/signup', (req, res) => {
 
             User
                 .create({ username, password: hashPass, name })
-                .then(() => res.json({ code: 200, message: 'User created' }))
+                .then(() => res.json({ code: 200, message: `${response.data.username} registered succesfully!` }))
                 .catch(err => res.status(500).json({ code: 500, message: 'DB error while creating user', err }))
         })
         .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user', err }))
@@ -40,8 +40,6 @@ router.post('/login', (req, res) => {
     User
         .findOne({ username })
         .then(user => {
-
-            console.log(user)
 
             if (!user) {
                 res.status(401).json({ code: 401, message: 'Username not registered', err })
