@@ -11,7 +11,7 @@ const Navigation = ({ loggedUser = 'guest', logout }) => {
                 return <Link to="/profile" className="nav-link">{loggedUser.name}</Link>
             
             case 'director':
-                return <Link to="/directorLandingPage" className="nav-link">Greetings Director {loggedUser.name}.</Link>
+                return <Link to="/profile" className="nav-link">Greetings Director {loggedUser.name}</Link>
             
             case 'agent':
                 return <Link to="/agentLandingPage" className="nav-link">WELCOME AGENT: {loggedUser.username}</Link>
@@ -24,16 +24,17 @@ const Navigation = ({ loggedUser = 'guest', logout }) => {
     const navbarMainLink = role => {
         switch (role) {
             case 'citizen':
-                return "/planner"
+                return <Link to="/planner" className="nav-link"> S.P.Y. Planner </Link>
             
             case 'director':
-                return "/directorLandingPage"
+                return <Link to="/directorLandingPage" className="nav-link">S.P.Y.</Link>
             
             case 'agent':
-                return "/agentLandingPage"
-            
+                return <Link to="/agentLandingPage" className="nav-link">S.P.Y.</Link>
+
             default:
-                return "/"
+                return <Link to="/" className="nav-link">S.P.Y. Planner</Link>
+
         }
     }
     
@@ -43,7 +44,7 @@ const Navigation = ({ loggedUser = 'guest', logout }) => {
 
             <Nav className="align-items-center justify-content-between">
                 {navbarWelcome(loggedUser.role)}
-                <Link to={navbarMainLink(loggedUser.role)} className="nav-link"> S.P.Y. Planner </Link>
+                {navbarMainLink(loggedUser.role)}
                 {
                     loggedUser === 'guest' ?
                         <>

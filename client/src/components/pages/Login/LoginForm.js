@@ -45,7 +45,7 @@ class LoginForm extends Component {
                         break
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => this.props.handleAlert(err.response.data.message) )
     }
 
     render() {

@@ -30,7 +30,7 @@ class PlansList extends Component {
             .then(response => {
                 this.setState({ plans: response.data.plans })
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
 

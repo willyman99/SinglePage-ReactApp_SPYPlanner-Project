@@ -17,14 +17,9 @@ router.post('/plan/addBlock', checkRoles('agent'), (req, res) => {
 
     MissionPlanBlock
         .create({ title, description, parallelCitizenPlanBlock })
-        .then(response => {
-            Mission
-                .findByIdAndUpdate(currentMission, { $push: { plan: response.id } }, { new: true })
-                .then(() => res.json(response))
-                .catch(err => res.status(500).json({ code: 500, message: 'Error saving MissionPlanBlock in Mission', err }))
-
-        })
-        .catch(err => res.status(500).json({ code: 500, message: 'Error saving PlanBlock', err }))
+        .then(response => Mission.findByIdAndUpdate(currentMission, { $push: { plan: response.id } }, { new: true }) )
+        .then(() => res.json({message: 'MissionPlanBlock created succesfully.'}))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error creating & saving MissionPlanBlock.', err }))
 })
 
 //Read all Plan Blocks in a Mission
@@ -48,7 +43,7 @@ router.get('/plan', checkRoles('agent'), (req, res) => {
             }
         ])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plans', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plans.', err }))
 })
 
 
@@ -71,7 +66,7 @@ router.get('/plan/:missionPlanBlockId', checkRoles('agent', 'director'), (req, r
             }
         ])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plans', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plans.', err }))
 })
 
 
@@ -84,7 +79,7 @@ router.put('/plan/:missionPlanBlockId', checkRoles('agent'), (req, res) => {
     MissionPlanBlock
         .findByIdAndUpdate(missionPlanBlockId, { title, description, parallelCitizenPlanBlock }, {new: true})
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error editing MissionPlanBlock', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error editing MissionPlanBlock.', err }))
 })
 
 
@@ -95,8 +90,8 @@ router.delete('/plan/:missionPlanBlockId', checkRoles('agent', 'director'), (req
 
     MissionPlanBlock
         .findByIdAndDelete(missionPlanBlockId)
-        .then(() => res.json({ mesage: 'MissionPlanBlock deleted successfully' }))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting MissionPlanBlock', err }))
+        .then(() => res.json({ message: 'MissionPlanBlock deleted successfully.' }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting MissionPlanBlock.', err }))
 })
 
 

@@ -18,15 +18,15 @@ const FriendCard = ({ name, username, _id, handleAlert, storeUser, reload }) => 
                 storeUser(response.data)
                 reload()
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
 
     return (
         <Card className="friend-card">
             <Card.Body>
-                <Card.Title>{name}</Card.Title>
-                <Button variant="dark" onClick={() => removeFriend()}>X</Button>
+                <Card.Title>{name} aka {username}</Card.Title>
+                <Button variant="danger" onClick={() => removeFriend()}>X</Button>
                 <Button variant="dark">
                     <Link to={`/planner/createForm?with=${_id}`} className="nav-link">MAKE PLAN WITH {name} </Link>
                 </Button>

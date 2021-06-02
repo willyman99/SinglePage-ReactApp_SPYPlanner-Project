@@ -12,17 +12,13 @@ const { checkRoles } = require('../middlewares')
 //Create a mission
 router.post('/assign', checkRoles('director'), (req, res) => {
 
-    const {mission} = req.body
+    const { objective, codename, target, agent } = req.body
 
     Mission
-        .create(mission)
-        .then(response => {
-            User
-                .findByIdAndUpdate(mission.agent, { $push: { assignedMission: response.id } })
-                .then(() => res.json(response))
-                .catch(err => res.status(500).json({ code: 500, message: 'Error saving Mission to director', err }))
-        })
-        .catch(err => res.status(500).json({ code: 500, message: 'Error creating Mission', err }))
+        .create({ objective, codename, target, agent })
+        .then(response => User.findByIdAndUpdate(agent, { $push: { assignedMission: response.id } }) )
+        .then(() => res.json({message: 'Mission created succesfully.'}))
+        //.catch(err => res.status(500).json({ code: 500, message: 'Error creating & saving mission.', err }))
 })
 
 
@@ -60,7 +56,7 @@ router.get('/', checkRoles('agent'), (req, res) => {
             }
         ])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching Mission', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching Mission.', err }))
 })
 
 
@@ -75,10 +71,10 @@ router.get('/:missionId', checkRoles('director'), (req, res) => {
             {
                 path: 'agent',
                 model: 'User',
-                select: 'username'
+                select: 'username medals'
             },
             {
-                path: 'targets',
+                path: 'target',
                 model: 'User',
                 select: 'name username friends plans',
                 populate: [
@@ -100,7 +96,7 @@ router.get('/:missionId', checkRoles('director'), (req, res) => {
             }
         ])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching Mission', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching Mission.', err }))
 })
 
 
@@ -115,7 +111,7 @@ router.put('/:missionId', checkRoles('director'), (req, res) => {
     Mission
         .findByIdAndUpdate(missionId, { status, isCompleted }, {new: true} )
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error editing Mission', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error editing Mission.', err }))
 })
 
 
@@ -126,8 +122,8 @@ router.delete('/:missionId', checkRoles('director'), (req, res) => {
 
     Mission
         .findByIdAndDelete(missionId)
-        .then(() => res.json({ mesage: 'Mission deleted successfully' }))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting Mission', err }))
+        .then(() => res.json({ message: 'Mission deleted successfully.' }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting Mission.', err }))
 })
 
 

@@ -5,7 +5,7 @@ module.exports = {
         if (req.session.currentUser) {
             next()
         } else {
-            res.json({ message: 'USER HAS UNAUTHORIZED ACCESS.' })
+            res.status(500).json({ message: 'UNAUTHORIZED ACCESS.' })
         }
     },
 
@@ -13,7 +13,7 @@ module.exports = {
         if (allowedRoles.includes(req.session.currentUser.role)) {
             next()
         } else {
-            res.json({ message: 'USER HAS UNAUTHORIZED ACCESS.' })
+            res.status(500).json({ message: 'UNAUTHORIZED ACCESS.' })
         }
     }
 }

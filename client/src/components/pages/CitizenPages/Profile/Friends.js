@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import UserService from './../../../../service/user.service'
 
 import FriendCard from './FriendCard'
-import UserCard from './UserCard'
+import UserCommunityCard from './UserCommunityCard'
 
 
 class Friends extends Component {
@@ -23,6 +23,7 @@ class Friends extends Component {
 
     componentDidMount() {
         this.loadCommunity()
+        if(this.props.loggedUser.role === 'director') this.setState({searchValue: ''})
     }
 
     loadCommunity() {
@@ -36,14 +37,14 @@ class Friends extends Component {
             .then(response => {
                 this.setState({ friends: response.data.friends })
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
     loadAllUsers() {
         this.userService
             .getAllUsers()
             .then(response => this.setState({ allUsers: response.data }))
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
 
@@ -54,7 +55,7 @@ class Friends extends Component {
 
 
     searchFor(value) {
-        if(value === '') { value = undefined }
+        if(value === '' && this.props.loggedUser.role !== 'director') { value = undefined }
         this.setState({ searchValue: value })
     }
 
@@ -62,7 +63,7 @@ class Friends extends Component {
     render() {
 
         const { friends, allUsers } = this.state
-        const friendIds = friends ? friends.map(elm => elm._id) : []
+        let friendIds = friends ? friends.map(elm => elm._id) : []
         let usersToShow = allUsers ? allUsers.filter(elm => elm.username.includes(this.state.searchValue) && !friendIds.includes(elm._id)) : undefined
 
         return (
@@ -80,7 +81,7 @@ class Friends extends Component {
                                 {friends.map(elm =>
                                     <FriendCard
                                         key={elm._id}
-                                        {...elm} loggedUser={this.props.loggedUser}
+                                        {...elm}
                                         handleAlert={this.props.handleAlert}
                                         storeUser={this.props.storeUser}
                                         reload={() => this.loadCommunity()} 
@@ -103,10 +104,9 @@ class Friends extends Component {
                                     <hr/>
                                     {
                                         usersToShow.map(elm =>
-                                            <UserCard
+                                            <UserCommunityCard
                                                 key={elm._id}
                                                 {...elm}
-                                                loggedUser={this.props.loggedUser}
                                                 handleAlert={this.props.handleAlert}
                                                 storeUser={this.props.storeUser}
                                                 reload={() => this.loadCommunity()}

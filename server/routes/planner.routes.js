@@ -19,13 +19,10 @@ router.post('/addBlock', (req, res) => {
                 promisesArray.push(User.findByIdAndUpdate(elm, { $push: { plans: response.id } }))
             })
 
-            Promise
-                .all(promisesArray)
-                .then(() => res.json(response))
-                .catch(err => res.status(500).json({ code: 500, message: "Error saving PlanBlocks in User's plans", err }))
-                
+            return Promise.all(promisesArray)
         })
-        .catch(err => res.status(500).json({ code: 500, message: 'Error saving PlanBlock', err }))
+        .then(() => res.json({ message: 'PlanBlock created succesfully.'}))
+        .catch(err => res.status(500).json({ code: 500, message: "Error creating & saving PlanBlock.", err }))
 })
 
 //Read all of current user's Plan Blocks
@@ -43,7 +40,7 @@ router.get('/', (req, res) => {
             }
         }])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user plans', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user plans.', err }))
 })
 
 
@@ -56,7 +53,7 @@ router.get('/:planBlockId', (req, res) => {
         .findById(planBlockId)
         .populate('participants', {id: 1, username: 1, name: 1})
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching PlanBlock', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching PlanBlock.', err }))
 })
 
 
@@ -69,7 +66,7 @@ router.put('/:planBlockId', (req, res) => {
     PlanBlock
         .findByIdAndUpdate(planBlockId, { title, description, participants }, {new: true})
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error editing PlanBlock', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error editing PlanBlock.', err }))
 })
 
 
@@ -86,14 +83,11 @@ router.delete('/:planBlockId', (req, res) => {
                 promisesArray.push(User.findByIdAndUpdate(elm, { $pull: { plans: planBlockId } }))
             })
 
-            Promise
-                .all(promisesArray)
-                .then(() => PlanBlock.findByIdAndDelete(planBlockId))
-                .then(() => res.json({ mesage: 'PlanBlock deleted successfully.' }))
-                .catch(err => res.status(500).json({ code: 500, message: 'Error deleting PlanBlock', err }))
-                
+            return Promise.all(promisesArray)
         })
-        .catch(err => res.status(500).json({ code: 500, message: 'Error finding PlanBlock', err }))    
+        .then(() => PlanBlock.findByIdAndDelete(planBlockId))
+        .then(() => res.json({ message: 'PlanBlock deleted successfully.' }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting PlanBlock.', err })) 
 })
 
 

@@ -1,13 +1,11 @@
 import './Planner.css'
-
 import { Container, Button } from 'react-bootstrap'
-
 import { Link } from 'react-router-dom'
 
 import PlansList from './PlansList'
 
 
-const Planner = () => {
+const Planner = (handleAlert) => {
     return (
         <Container>
             <h1>S.P.Y. Planner 'CUTE LOGO'</h1>
@@ -16,7 +14,7 @@ const Planner = () => {
                 <Link to="/profile/friends" className="nav-link">FRIENDS</Link>
             </Button>
 
-            <PlansList/>
+            <PlansList handleAlert={handleAlert}/>
             
             <Button variant="dark">
                 <Link to="/planner/createForm" className="nav-link">NEW PLAN</Link>

@@ -108,3 +108,6 @@ express-generator/
 |POST|agent/login|When signing a normal user in, it checks if codeword already exists and is of an agent, if it does, it signs the agent in|The agent's data|
 |POST|agent/mission/addPlan|Create a new ddbb missionPlanBlock object (who, what, where) and store it in the agent's ddbb object (from, with, how, where)|The agent's updated data|
 |GET|agent/mission/post|Sends the mission to the director and awaits approval or rejection of it, updates the mission object| The agent's updated data|
+
+
+

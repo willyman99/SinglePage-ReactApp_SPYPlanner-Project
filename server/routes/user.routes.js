@@ -6,6 +6,8 @@ const PlanBlock = require('./../models/planBlock.model')
 const Mission = require('../models/mission.model')
 const MissionPlanBlock = require('./../models/missionPlanBlock.model')
 
+const { checkRoles } = require('../middlewares')
+
 
 //Show all users
 router.get('/allUsers', (req, res) => {
@@ -16,9 +18,10 @@ router.get('/allUsers', (req, res) => {
         case 'director':
             User
                 .find({ $and: [ { role: 'citizen' }, { _id: {$ne: req.session.currentUser._id}} ] })
-                .select('id username name')
+                .select('id username name friends plans')
+                .populate('plans')
                 .then(response => res.json(response))
-                .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users', err }))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users.', err }))
             break
         
         case 'agent':
@@ -27,18 +30,17 @@ router.get('/allUsers', (req, res) => {
     }
 })
 
-//Get one user's name
-router.get('/user/:userId', (req, res) => {
 
+//Get one user's full info
+router.get('/user/:userId', checkRoles('director', 'agent'), (req, res) => {
 
     const { userId } = req.params
     console.log(userId)
 
     User
         .findById(userId)
-        .select('name id')
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user.', err }))
 })
 
 
@@ -66,7 +68,7 @@ router.get('/profile', (req, res) => {
                     }
                 ])
                 .then(response => res.json(response))
-                .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user', err }))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user.', err }))
             break
         
         case 'agent':
@@ -96,7 +98,7 @@ router.put('/changeName', (req, res) => {
                     req.session.currentUser = response
                     res.json(response)
                 })
-            .catch(err => res.status(500).json({ code: 500, message: 'Error editing user', err }))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error editing user.', err }))
             break
         
         case 'agent':
@@ -122,7 +124,7 @@ router.put('/addFriend', (req, res) => {
                     req.session.currentUser = response
                     res.json(response)
                 })
-                .catch(err => res.status(500).json({ code: 500, message: 'Error editing users', err }))
+                .catch(err => res.status(500).json({ code: 500, message: 'Error editing users.', err }))
             break
         
         case 'agent':
@@ -148,7 +150,7 @@ router.put('/removeFriend', (req, res) => {
                 req.session.currentUser = response
                 res.json(response)
             })
-            .catch(err => res.status(500).json({ code: 500, message: 'Error editing user', err }))
+            .catch(err => res.status(500).json({ code: 500, message: 'Error editing user.', err }))
             break
         
         case 'agent':
@@ -156,6 +158,28 @@ router.put('/removeFriend', (req, res) => {
             break
     }
 })
+
+
+//Delete One User
+router.delete('/:userId', checkRoles('director'), (req, res) => {
+
+    const { userId } = req.params
+    const promisesArray = []
+
+    User
+        .findById(userId)
+        .then(response => {
+            response.friends.forEach(elm => {
+                promisesArray.push(User.findByIdAndUpdate(elm, { $pull: { friends: userId } }))
+            })
+
+            return Promise.all(promisesArray)
+        })
+        .then(() => User.findByIdAndDelete(userId))
+        .then(() => res.json({ message: 'User deleted successfully.' }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting User.', err }))   
+})
+
 
 
 module.exports = router

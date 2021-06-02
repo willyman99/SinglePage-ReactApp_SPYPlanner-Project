@@ -3,7 +3,7 @@ import { Card, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 
-const ListedPlanBlock = ({ description, title, participants, reload, _id }) => {
+const ListedPlanBlock = ({ description, title, _id }) => {
 
     return (
         <Col md={3}>

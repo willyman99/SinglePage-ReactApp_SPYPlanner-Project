@@ -16,7 +16,7 @@ router.post('/signup', (req, res) => {
         .then(user => {
 
             if (user) {
-                res.status(400).json({ code: 400, message: 'Username already exixts' })
+                res.status(400).json({ code: 400, message: 'Username already exixts.' })
                 return
             }
 
@@ -25,10 +25,10 @@ router.post('/signup', (req, res) => {
 
             User
                 .create({ username, password: hashPass, name })
-                .then(() => res.json({ code: 200, message: `${response.data.username} registered succesfully!` }))
-                .catch(err => res.status(500).json({ code: 500, message: 'DB error while creating user', err }))
+                .then(response => res.json({ code: 200, message: `${response.username} registered succesfully.` }))
+                .catch(err => res.status(500).json({ code: 500, message: 'DB error while creating user.', err }))
         })
-        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user.', err }))
 })
 
 
@@ -42,31 +42,31 @@ router.post('/login', (req, res) => {
         .then(user => {
 
             if (!user) {
-                res.status(401).json({ code: 401, message: 'Username not registered', err })
+                res.status(401).json({ code: 401, message: 'Username not registered.', err })
                 return
             }
 
             if (bcrypt.compareSync(pwd, user.password) === false) {
-                res.status(401).json({ code: 401, message: 'Incorect password', err })
+                res.status(401).json({ code: 401, message: 'Incorect password.', err })
                 return
             }
 
             req.session.currentUser = user
             res.json(req.session.currentUser)
         })
-        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user.', err }))
 })
 
 
 // Logout (get)
 router.get('/logout', (req, res) => {
-    req.session.destroy((err) => res.json({ message: 'Logout successful' }));
+    req.session.destroy((err) => res.json({ message: 'Logout successful.' }));
 })
 
 
 // isLoggedIn (get)
 router.get('/isLoggedIn', (req, res) => {
-    req.session.currentUser ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access' })
+    req.session.currentUser ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Session expired.' })
 })
 
 

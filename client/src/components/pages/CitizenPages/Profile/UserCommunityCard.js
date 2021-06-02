@@ -1,10 +1,10 @@
 import './Profile.css'
 import { Card, Button } from 'react-bootstrap'
 
-import UserService from './../../../../service/user.service'
+import UserService from '../../../../service/user.service'
 
 
-const UserCard = ({ username, _id, handleAlert, storeUser, reload }) => {
+const UserCommunityCard = ({ username, _id, handleAlert, storeUser, reload }) => {
 
     const addFriend = () => {
         const userService = new UserService()
@@ -16,7 +16,7 @@ const UserCard = ({ username, _id, handleAlert, storeUser, reload }) => {
                 storeUser(response.data)
                 reload()
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
 
@@ -30,4 +30,4 @@ const UserCard = ({ username, _id, handleAlert, storeUser, reload }) => {
     )
 }
 
-export default UserCard
+export default UserCommunityCard

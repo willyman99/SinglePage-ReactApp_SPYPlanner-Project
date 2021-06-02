@@ -28,14 +28,11 @@ class SignupForm extends Component {
         this.authService
             .signup(this.state)
             .then(response => {
-                this.props.storeUser(response.data)
                 this.props.handleAlert(response.data.message)
                 this.props.history.push('/login')
             })
-            .catch(err => {
-                const errorMessage = err.response.data.message
-                this.props.handleAlert(errorMessage)
-            })
+            .catch(err => this.props.handleAlert(err.response.data.message))
+
     }
 
 

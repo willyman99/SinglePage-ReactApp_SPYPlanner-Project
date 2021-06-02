@@ -1,9 +1,9 @@
+import './Planner.css'
 import { Component } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import PlannerService from '../../../../service/planner.service'
-import AuthService from '../../../../service/auth.service'
 
 class FullPlanBlock extends Component {
 
@@ -13,7 +13,6 @@ class FullPlanBlock extends Component {
             planBlock: undefined
         }
         this.plannerService = new PlannerService()
-        this.authService = new AuthService()
     }
 
     componentDidMount() {
@@ -25,7 +24,8 @@ class FullPlanBlock extends Component {
             .then(response => {
                 this.setState({ planBlock: response.data })
             })
-            //.catch(
+            .catch(err => this.props.handleAlert(err.response.data.message))
+
     }
 
     deleteThisPlanBlock() {
@@ -36,19 +36,15 @@ class FullPlanBlock extends Component {
             .deleteOnePlanBlock(planBlockId)
             .then(response => {
                 this.props.handleAlert(response.data.message)
-                return this.authService.isLoggedIn()
-            })
-            .then(response => {
-                this.props.storeUser(response.data)
                 this.props.history.push('/planner')
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
     render() {
 
         const { planBlock } = this.state
-        if(planBlock) console.log(planBlock.participants) 
+        const participantsToShow = planBlock ? planBlock.participants.filter(elm => elm._id !== this.props.loggedUser._id) : undefined
 
         return (
 
@@ -76,7 +72,14 @@ class FullPlanBlock extends Component {
                             <hr />
                             <h1>Participants:</h1>
                             <ul>
-                                {planBlock.participants.map(elm => <li key={elm._id} >{elm.name}</li>)}
+                                <li key={this.props.loggedUser._id} >YOU ({this.props.loggedUser.name})</li>
+                                {
+                                    !participantsToShow ?
+                                        <h1>LOADING OTHER PARTICIPANTS</h1>
+                                    :
+                                        participantsToShow.map(elm => <li key={elm._id} >{elm.name}</li>)
+                                    
+                                }
                             </ul>
                             <hr/>
                             <Row className="justify-content-between">

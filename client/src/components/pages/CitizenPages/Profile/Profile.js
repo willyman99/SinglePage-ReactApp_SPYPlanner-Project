@@ -2,6 +2,7 @@ import './Profile.css'
 import { Component } from 'react'
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import defaultProfPic from './profPic-default.jpg'
 
 import UserService from './../../../../service/user.service'
 import AuthService from './../../../../service/auth.service'
@@ -56,7 +57,7 @@ class Profile extends Component {
                 <h1>{loggedUser.username}'s Profile</h1>
                 <hr/>
                 <Row>
-                    <Col md={6}>
+                    <Col md={8}>
                         {
                             this.state.editName ?
                                 <Form onSubmit={e => this.handleSubmit(e)}>
@@ -74,14 +75,12 @@ class Profile extends Component {
                         }
                         <hr/>
 
-                        <span>{loggedUser.friends.length}</span>
                         <Button variant="dark">
                             <Link to="/profile/friends" className="nav-link">FRIENDS</Link>
                         </Button>
+                        <span>{loggedUser.friends.length}</span>
                         <hr/>
 
-
-                        <span>{loggedUser.plans.length}</span>
                         <Button variant="dark">
                             <Link to="/planner" className="nav-link">PLANS</Link>
                         </Button>
@@ -89,8 +88,8 @@ class Profile extends Component {
                         
                     </Col>
 
-                    <Col md={6}>
-                        <img src="../../../../../public/img/citizen/profPic-default.jpg" alt={loggedUser.username}></img>
+                    <Col md={4}>
+                        <img id="profile-pic" src={defaultProfPic} alt={loggedUser.username}></img>
                         <Button variant="dark">Change Profile Picture</Button>
                     </Col>
                 </Row>

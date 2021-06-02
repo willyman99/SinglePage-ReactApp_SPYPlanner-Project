@@ -14,15 +14,15 @@ const missionSchema = new Schema({
         required: [true, 'An Agent must be assigned.']
     },
 
-    targets: [{
+    target: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }],
+    },
 
     objective: {
         type: String,
-        enum: ['Monitor', 'Kill', 'Kidnap', 'Protect', 'RetrieveAsset'],
-        default: 'Monitor'
+        enum: ['monitor', 'kill', 'kidnap', 'protect', 'ron', 'extract', 'impersonate'],
+        default: 'monitor'
     },
 
     plan: [{

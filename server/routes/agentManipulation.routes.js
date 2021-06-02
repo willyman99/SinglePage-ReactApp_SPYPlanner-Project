@@ -21,7 +21,7 @@ router.post('/create', checkRoles('director'), (req, res) => {
         .then(user => {
 
             if (user) {
-                res.status(400).json({ code: 400, message: 'Username already exixts' })
+                res.status(400).json({ code: 400, message: 'Username already exixts.' })
                 return
             }
 
@@ -30,10 +30,10 @@ router.post('/create', checkRoles('director'), (req, res) => {
 
             User
                 .create({ username, password: hashPass, role: 'agent' })
-                .then(() => res.json({ code: 200, message: 'Agent created' }))
-                .catch(err => res.status(500).json({ code: 500, message: 'DB error while creating agent user', err }))
+                .then(response => res.json({ code: 200, message: `Agent ${response.username} created succesfully.` }))
+                .catch(err => res.status(500).json({ code: 500, message: 'DB error while creating agent user.', err }))
         })
-        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'DB error while fetching user.', err }))
 })
 
 //Show all agents
@@ -41,9 +41,9 @@ router.get('/', checkRoles('director'), (req, res) => {
     User
         .find({ role: 'agent' })
         .select('username medals assignedMission')
-        .populate('assignedMission', {codename: 1})
+        .populate('assignedMission')
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching users', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching agents.', err }))
 })
 
 //Show one agent's details
@@ -64,18 +64,20 @@ router.get('/:agentId', checkRoles('director'), (req, res) => {
             ]
         })
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching agent', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching agent.', err }))
 })
 
 //Delete agent
-router.delete('/:agentId', checkRoles('director'), (req, res) => {
+router.delete('/:agentId', checkRoles('agent'), (req, res) => {
 
-    const agentId = req.params
+    const { agentId } = req.params
 
     User
-        .findByIdAndDelete(agentId)
-        .then(() => res.json({ mesage: 'Agent deleted successfully' }))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting Agent', err }))
+        .findById(agentId)
+        .then(response => response.assignedMission ? Mission.findByIdAndDelete(response.assignedMission) : null )
+        .then(() => User.findByIdAndDelete(agentId))
+        .then(() => res.json({ message: 'Agent (and its assigned mission) deleted successfully.' }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error deleting agent.', err }))  
 })
 
 

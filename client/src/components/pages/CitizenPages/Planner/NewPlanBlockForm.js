@@ -1,11 +1,10 @@
+import './Planner.css'
 import { Component } from 'react'
 import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import PlannerService from './../../../../service/planner.service'
 import UserService from './../../../../service/user.service'
-import AuthService from './../../../../service/auth.service'
-
 
 class NewPlanBlockForm extends Component {
 
@@ -19,8 +18,6 @@ class NewPlanBlockForm extends Component {
         }
         this.plannerService = new PlannerService()
         this.userService = new UserService()
-        this.authService = new AuthService()
-
     }
 
     componentDidMount() {
@@ -50,17 +47,17 @@ class NewPlanBlockForm extends Component {
             .then(response => {
                 this.setState({ friends: response.data.friends })
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
     addParticipant(participantId) {
         this.userService
-            .getName(participantId)
+            .getOneUser(participantId)
             .then(response => {
                 const joinedArrays = this.state.participants.concat({id: participantId, name: response.data.name})
                 this.setState({ participants: joinedArrays })
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
     removeParticipant(participantId) {
@@ -83,13 +80,11 @@ class NewPlanBlockForm extends Component {
 
         this.plannerService
             .addBlock({title, description, participants})
-            .then(() => this.authService.isLoggedIn())
             .then(response => {
-                this.props.storeUser(response.data)
-                this.props.handleAlert(`Plan "${title}" has been created succesfully.`)
+                this.props.handleAlert(response.data.message)
                 this.props.history.push('/planner')
             })
-            //.catch
+            .catch(err => this.props.handleAlert(err.response.data.message))
     }
 
 
@@ -113,7 +108,7 @@ class NewPlanBlockForm extends Component {
                             <hr/>
                             <Form.Group controlId="description">
                                 <Form.Label>Plan Description</Form.Label>
-                                <Form.Control type="text" value={this.state.description} onChange={e => this.handleInputChange(e)} name="description" />
+                                <Form.Control type="textarea" value={this.state.description} onChange={e => this.handleInputChange(e)} name="description" />
                             </Form.Group>
                             <hr/>
                         </Col>

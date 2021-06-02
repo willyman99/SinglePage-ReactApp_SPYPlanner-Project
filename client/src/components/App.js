@@ -29,8 +29,8 @@ class App extends Component {
     this.authService
       .isLoggedIn()
       .then(response => this.setState({ loggedUser: response.data }))
-      .catch(() => {
-        this.setState({ loggedUser: undefined })
+      .catch(err => {
+        //this.props.handleAlert(err.response.data.message)
         this.logout()
       })
   }
