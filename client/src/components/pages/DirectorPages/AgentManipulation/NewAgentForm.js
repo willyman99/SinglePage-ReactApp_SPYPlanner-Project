@@ -27,8 +27,8 @@ class NewPlanBlockForm extends Component {
     handleSubmit(e) {
         e.preventDefault()
 
-        const { username, pwd } = this.state
-        username.toUpperCase()
+        let { username, pwd } = this.state
+        username = username.toUpperCase()
 
         this.agentManipulationService
             .createAgent({ username, pwd })

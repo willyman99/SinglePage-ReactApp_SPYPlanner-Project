@@ -12,17 +12,20 @@ const { checkRoles } = require('../middlewares')
 //Create Plan Block and save in assigned Mission
 router.post('/plan/addBlock', checkRoles('agent'), (req, res) => {
 
-    const { title, description, parallelCitizenPlanBlock } = req.body
+    const { title, description, parallelCitizenPlanBlock, locationName } = req.body
     const currentMission = req.session.currentUser.assignedMission
 
+    console.log(locationName)
+
     MissionPlanBlock
-        .create({ title, description, parallelCitizenPlanBlock })
-        .then(response => Mission.findByIdAndUpdate(currentMission, { $push: { plan: response.id } }, { new: true }) )
+        .create({ title, description, parallelCitizenPlanBlock, locationName })
+        .then(response => Mission.findByIdAndUpdate(currentMission, { $push: { plan: response.id } }))
+        .then(() => Mission.findByIdAndUpdate(currentMission, { status: 'pending' }))
         .then(() => res.json({message: 'MissionPlanBlock created succesfully.'}))
         .catch(err => res.status(500).json({ code: 500, message: 'Error creating & saving MissionPlanBlock.', err }))
 })
 
-//Read all Plan Blocks in a Mission
+//Read all Plan Blocks in assigned Mission
 router.get('/plan', checkRoles('agent'), (req, res) => {
 
     const currentMission = req.session.currentUser.assignedMission
@@ -38,7 +41,12 @@ router.get('/plan', checkRoles('agent'), (req, res) => {
                 populate: {
                     path: 'parallelCitizenPlanBlock',
                     model: 'PlanBlock',
-                    select: 'title'
+                    select: '',
+                    populate: {
+                        path: 'participants',
+                        model: 'User',
+                        select: 'name'
+                    }
                 }
             }
         ])
@@ -47,7 +55,7 @@ router.get('/plan', checkRoles('agent'), (req, res) => {
 })
 
 
-//Read one Plan Block in assigned Mission
+//Read one Plan Block
 router.get('/plan/:missionPlanBlockId', checkRoles('agent', 'director'), (req, res) => {
 
     const {missionPlanBlockId} = req.params
@@ -66,7 +74,7 @@ router.get('/plan/:missionPlanBlockId', checkRoles('agent', 'director'), (req, r
             }
         ])
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plans.', err }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching mission plan block.', err }))
 })
 
 

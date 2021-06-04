@@ -32,15 +32,14 @@ router.get('/allUsers', (req, res) => {
 
 
 //Get one user's full info
-router.get('/user/:userId', checkRoles('director', 'agent'), (req, res) => {
+router.get('/user/:userId', (req, res) => {
 
     const { userId } = req.params
-    console.log(userId)
 
     User
         .findById(userId)
         .then(response => res.json(response))
-        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user.', err }))
+        //.catch(err => res.status(500).json({ code: 500, message: 'Error fetching user.', err }))
 })
 
 

@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 
 const Navigation = ({ loggedUser = 'guest', logout }) => {
 
+    loggedUser = loggedUser || "guest"
+
     const navbarWelcome = role => {
         switch (role) {
             case 'citizen':

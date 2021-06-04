@@ -24,25 +24,23 @@ class App extends Component {
     this.authService = new AuthService()
   }
 
-
   fetchUser() {
     this.authService
       .isLoggedIn()
-      .then(response => this.setState({ loggedUser: response.data }))
+      .then(response => {
+        this.setState({ loggedUser: response.data })
+      })
       .catch(err => {
-        //this.props.handleAlert(err.response.data.message)
-        this.logout()
+        this.setState({loggedUser: null})
+        this.handleAlert(err.response.data.message)
       })
   }
 
-
   storeUser = loggedUser => this.setState({ loggedUser })
-
 
   handleAlert(alertText, showAlert = true) {
     this.setState({ showAlert, alertText })
   }
-
 
   logout = () => {
 
@@ -51,17 +49,15 @@ class App extends Component {
     authService
         .logout()
         .then(response => {
-            this.storeUser(undefined)
+            this.storeUser(null)
             this.handleAlert(response.data.message)
         })
-        .catch(err => console.log(err))
+        .catch(err => this.handleAlert(err.response.data.message) )
   }
-
 
   componentDidMount() {
-    this.fetchUser()
+    this.fetchUser() 
   }
-
 
   render() {
 
@@ -73,12 +69,17 @@ class App extends Component {
         />
 
         <main>
-          <Routes
-            loggedUser={this.state.loggedUser}
-            logout={() => this.logout()}
-            storeUser={user => this.storeUser(user)}
-            handleAlert={alertText => this.handleAlert(alertText)}
-          />
+          {
+            this.state.loggedUser === undefined ?
+              <h1>LOADING USER</h1>
+            :
+              <Routes
+                loggedUser={this.state.loggedUser}
+                logout={() => this.logout()}
+                storeUser={user => this.storeUser(user)}
+                handleAlert={alertText => this.handleAlert(alertText)}
+              />
+          }
         </main>
 
         <Footer />

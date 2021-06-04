@@ -43,9 +43,30 @@ router.get('/', (req, res) => {
         .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user plans.', err }))
 })
 
+//Read all of a user's Plan Blocks
+router.get('/allPlanBlocks/:userId', (req, res) => {
+
+    const {userId} = req.params
+
+    User
+        .findById(userId)
+        .select('plans')
+        .populate([{
+            path: 'plans',
+            model: 'PlanBlock',
+            populate: {
+                path: 'participants',
+                model: 'User',
+                select: 'id name'
+            }
+        }])
+        .then(response => res.json(response))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error fetching user plans.', err }))
+})
+
 
 //Read one Plan Block
-router.get('/:planBlockId', (req, res) => {
+router.get('/planBlock/:planBlockId', (req, res) => {
 
     const {planBlockId} = req.params
 

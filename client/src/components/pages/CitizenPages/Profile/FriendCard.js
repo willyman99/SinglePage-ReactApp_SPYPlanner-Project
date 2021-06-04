@@ -18,7 +18,7 @@ const FriendCard = ({ name, username, _id, handleAlert, storeUser, reload }) => 
                 storeUser(response.data)
                 reload()
             })
-            .catch(err => this.props.handleAlert(err.response.data.message))
+            .catch(err => handleAlert(err.response.data.message))
     }
 
 

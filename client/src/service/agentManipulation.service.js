@@ -10,11 +10,11 @@ class AgentManipulationService {
         })
     }
 
-    createAgent = agentInfo => this.app.post('/create', agentInfo) //msg: 'Agent created.'
-    getAllAgents = () => this.app.get('/') //All users with the 'role' attribute: 'agent'
-    getOneAgent = agentId => this.app.get(`/${agentId}`) //The Agent
-    deleteOneAgent = agentId => this.app.delete(`/${agentId}`) //msg: 'Agent deleted successfully'
-
+    createAgent = agentInfo => this.app.post('/create', agentInfo)
+    getAllAgents = () => this.app.get('/')
+    getOneAgent = agentId => this.app.get(`/${agentId}`)
+    awardOneAgent = agentId => this.app.put(`/award/${agentId}`)
+    deleteOneAgent = agentId => this.app.delete(`/${agentId}`) 
 }
 
 

@@ -21,7 +21,7 @@ const missionSchema = new Schema({
 
     objective: {
         type: String,
-        enum: ['monitor', 'kill', 'kidnap', 'protect', 'ron', 'extract', 'impersonate'],
+        enum: ['monitor', 'kill', 'kidnap', 'protect', 'rob', 'extract', 'impersonate'],
         default: 'monitor'
     },
 

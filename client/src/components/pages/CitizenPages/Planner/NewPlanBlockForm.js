@@ -27,7 +27,6 @@ class NewPlanBlockForm extends Component {
         
         const query = this.props.location.search
         if (query.includes('with')) { this.extractParticipant(query) }
-        //if (query.includes('time')) { this.extractTime(query) }
 
         this.loadFriends()
     }
@@ -36,10 +35,6 @@ class NewPlanBlockForm extends Component {
         const participantId = string.replace('?with=', '')
         this.addParticipant(participantId)
     }
-
-    // extractTime(string) {
-    //     const time = string.replace('?time=', '')
-    // }
 
     loadFriends() {
         this.userService

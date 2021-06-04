@@ -72,19 +72,19 @@ router.get('/isLoggedIn', (req, res) => {
 
 // isCitizen (get)
 router.get('/isCitizen', (req, res) => {
-    req.session.currentUser.role === 'citizen' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access' })
+    req.session.currentUser.role === 'citizen' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access.' })
 })
 
 
 // isDirector (get)
 router.get('/isDirector', (req, res) => {
-    req.session.currentUser.role === 'director' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access' })
+    req.session.currentUser.role === 'director' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access.' })
 })
 
 
 // isAgent (get)
 router.get('/isAgent', (req, res) => {
-    req.session.currentUser.role === 'agent' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access' })
+    req.session.currentUser.role === 'agent' ? res.json(req.session.currentUser) : res.status(401).json({ code: 401, message: 'Unauthorized access.' })
 })
 
 

@@ -31,7 +31,9 @@ class SignupForm extends Component {
                 this.props.handleAlert(response.data.message)
                 this.props.history.push('/login')
             })
-            .catch(err => this.props.handleAlert(err.response.data.message))
+            .catch(err => {
+                this.props.handleAlert(err.response.data.message)
+            })
 
     }
 

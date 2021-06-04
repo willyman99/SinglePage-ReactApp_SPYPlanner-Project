@@ -16,6 +16,8 @@ const missionPlanBlockSchema = new Schema({
         ref: 'PlanBlock'
     },
 
+    locationName: String,
+
     // location: {
     //     latitude: String,
     //     longitude: String,

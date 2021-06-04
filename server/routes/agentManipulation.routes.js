@@ -5,7 +5,6 @@ const User = require('../models/user.model')
 const Mission = require('../models/mission.model')
 const missionPlanBlock = require('../models/missionPlanBlock.model')
 
-
 const bcrypt = require("bcrypt")
 const bcryptSalt = 10
 
@@ -57,9 +56,9 @@ router.get('/:agentId', checkRoles('director'), (req, res) => {
 
         .populate({
             path: 'assignedMission',
-            select: 'codename targets objective plan status',
+            select: 'codename target objective plan status',
             populate: [
-                { path: 'targets', select: 'name' },
+                { path: 'target', select: 'name' },
                 { path: 'plan' }
             ]
         })
@@ -67,14 +66,26 @@ router.get('/:agentId', checkRoles('director'), (req, res) => {
         .catch(err => res.status(500).json({ code: 500, message: 'Error fetching agent.', err }))
 })
 
+//Award one agent
+router.put('/award/:agentId', checkRoles('director'), (req, res) => {
+
+    const { agentId } = req.params
+    
+    User
+        .findByIdAndUpdate(agentId, {$inc: {'medals': 1}}, {new: true})
+        .then(response => res.json({ message: `Mission completed & Agent ${response.username} has been awarded 1 medal.` }))
+        .catch(err => res.status(500).json({ code: 500, message: 'Error editing agent.', err }))
+
+})
+
 //Delete agent
-router.delete('/:agentId', checkRoles('agent'), (req, res) => {
+router.delete('/:agentId', checkRoles('director'), (req, res) => {
 
     const { agentId } = req.params
 
     User
         .findById(agentId)
-        .then(response => response.assignedMission ? Mission.findByIdAndDelete(response.assignedMission) : null )
+        .then(response => response.assignedMission ? Mission.findByIdAndDelete(response.assignedMission) : undefined )
         .then(() => User.findByIdAndDelete(agentId))
         .then(() => res.json({ message: 'Agent (and its assigned mission) deleted successfully.' }))
         .catch(err => res.status(500).json({ code: 500, message: 'Error deleting agent.', err }))  
